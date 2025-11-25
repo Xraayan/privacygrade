@@ -66,19 +66,12 @@ A browser extension that evaluates website privacy practices and assigns a clear
 - Sites using aggressive tracking techniques are intentionally graded lower
 
 ## Installation
-
-### Chrome / Edge (Development)
-1. Download or clone the extension
-2. Open `chrome://extensions/`
-3. Enable Developer mode
-4. Choose Load unpacked and select the extension folder
-5. The extension icon will appear in the toolbar
-
-### Firefox
-1. Open `about:debugging`
-2. Select This Firefox
-3. Click Load Temporary Add-on
-4. Choose `manifest.json`
+1. Download privacygrade.zip
+2. Extract the ZIP file
+3. Open chrome://extensions/
+4. Enable Developer mode
+5. Click "Load unpacked"
+6. Select the extracted folder
 
 ## File Structure
 
