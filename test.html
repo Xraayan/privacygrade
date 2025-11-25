@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PrivacyGrade Test Page</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; }
+        .section { margin: 30px 0; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
+        .tracker { background: #ffebee; }
+        .fingerprint { background: #fff3e0; }
+        .forms { background: #e8f5e8; }
+        .permissions { background: #e3f2fd; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        input, select { margin: 5px; padding: 8px; }
+        canvas { border: 1px solid #ccc; }
+    </style>
+</head>
+<body>
+    <h1>PrivacyGrade Extension Test Page</h1>
+    <p>This page contains various privacy-invasive elements to test the extension's detection capabilities.</p>
+    
+    <div class="section tracker">
+        <h2>Tracker Simulation</h2>
+        <p>Loading simulated tracking scripts...</p>
+        <img src="https://www.google-analytics.com/collect?v=1&tid=UA-XXXXX-Y&cid=555&t=pageview" style="display:none;">
+        <script>
+            // Simulate tracker requests
+            fetch('https://doubleclick.net/pixel?id=test').catch(() => {});
+            fetch('https://facebook.com/tr?id=test').catch(() => {});
+        </script>
+    </div>
+    
+    <div class="section fingerprint">
+        <h2>Fingerprinting Tests</h2>
+        <canvas id="testCanvas" width="200" height="100"></canvas>
+        <p>Canvas fingerprinting test</p>
+        
+        <button onclick="testCanvasFingerprinting()">Test Canvas Fingerprinting</button>
+        <button onclick="testWebGLFingerprinting()">Test WebGL Fingerprinting</button>
+        <button onclick="testAudioFingerprinting()">Test Audio Fingerprinting</button>
+        <button onclick="testFontEnumeration()">Test Font Enumeration</button>
+        
+        <div id="fingerprintResults"></div>
+    </div>
+    
+    <div class="section permissions">
+        <h2>Permission Requests</h2>
+        <button onclick="requestGeolocation()">Request Geolocation</button>
+        <button onclick="requestNotifications()">Request Notifications</button>
+        <button onclick="requestCamera()">Request Camera</button>
+        <div id="permissionResults"></div>
+    </div>
+    
+    <div class="section forms">
+        <h2>Data Collection Forms</h2>
+        <form>
+            <h3>Registration Form (Excessive Data Collection)</h3>
+            <input type="text" placeholder="First Name" name="firstName">
+            <input type="text" placeholder="Last Name" name="lastName">
+            <input type="email" placeholder="Email" name="email">
+            <input type="tel" placeholder="Phone Number" name="phone">
+            <input type="text" placeholder="Address" name="address">
+            <input type="date" placeholder="Date of Birth" name="birthday">
+            <input type="text" placeholder="Social Security Number" name="ssn">
+            <input type="text" placeholder="Annual Income" name="income">
+            <select name="maritalStatus">
+                <option>Marital Status</option>
+                <option>Single</option>
+                <option>Married</option>
+            </select>
+            <button type="button">Submit</button>
+        </form>
+    </div>
+    
+    <script>
+        // Set cookies for testing
+        document.cookie = "tracking_id=abc123; expires=Fri, 31 Dec 2025 23:59:59 GMT; path=/";
+        document.cookie = "_ga=GA1.2.123456789.1234567890; expires=Fri, 31 Dec 2025 23:59:59 GMT; path=/";
+        document.cookie = "session_id=xyz789; path=/";
+        
+        // Store data in localStorage
+        localStorage.setItem('user_preferences', JSON.stringify({theme: 'dark', language: 'en'}));
+        localStorage.setItem('tracking_data', 'user_behavior_data_here');
+        
+        function testCanvasFingerprinting() {
+            const canvas = document.getElementById('testCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Draw text for fingerprinting
+            ctx.textBaseline = 'top';
+            ctx.font = '14px Arial';
+            ctx.fillText('Canvas fingerprinting test 🔒', 2, 2);
+            
+            // Get image data
+            const imageData = canvas.toDataURL();
+            document.getElementById('fingerprintResults').innerHTML += 
+                '<p>Canvas fingerprint generated: ' + imageData.substring(0, 50) + '...</p>';
+        }
+        
+        function testWebGLFingerprinting() {
+            const canvas = document.createElement('canvas');
+            const gl = canvas.getContext('webgl');
+            
+            if (gl) {
+                const renderer = gl.getParameter(gl.RENDERER);
+                const vendor = gl.getParameter(gl.VENDOR);
+                document.getElementById('fingerprintResults').innerHTML += 
+                    '<p>WebGL Renderer: ' + renderer + '</p>';
+            }
+        }
+        
+        function testAudioFingerprinting() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const analyser = audioContext.createAnalyser();
+                
+                oscillator.connect(analyser);
+                document.getElementById('fingerprintResults').innerHTML += 
+                    '<p>Audio context created for fingerprinting</p>';
+            } catch (e) {
+                document.getElementById('fingerprintResults').innerHTML += 
+                    '<p>Audio fingerprinting failed: ' + e.message + '</p>';
+            }
+        }
+        
+        function testFontEnumeration() {
+            const testFonts = ['Arial', 'Times', 'Courier', 'Helvetica', 'Georgia'];
+            const testElement = document.createElement('div');
+            testElement.style.position = 'absolute';
+            testElement.style.left = '-9999px';
+            testElement.innerHTML = 'Font test';
+            document.body.appendChild(testElement);
+            
+            testFonts.forEach(font => {
+                testElement.style.fontFamily = font;
+                const width = testElement.offsetWidth;
+                // This triggers font enumeration detection
+            });
+            
+            document.body.removeChild(testElement);
+            document.getElementById('fingerprintResults').innerHTML += 
+                '<p>Font enumeration test completed</p>';
+        }
+        
+        function requestGeolocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    position => {
+                        document.getElementById('permissionResults').innerHTML += 
+                            '<p>Geolocation granted</p>';
+                    },
+                    error => {
+                        document.getElementById('permissionResults').innerHTML += 
+                            '<p>Geolocation denied: ' + error.message + '</p>';
+                    }
+                );
+            }
+        }
+        
+        function requestNotifications() {
+            if ('Notification' in window) {
+                Notification.requestPermission().then(permission => {
+                    document.getElementById('permissionResults').innerHTML += 
+                        '<p>Notification permission: ' + permission + '</p>';
+                });
+            }
+        }
+        
+        function requestCamera() {
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(stream => {
+                        document.getElementById('permissionResults').innerHTML += 
+                            '<p>Camera access granted</p>';
+                        stream.getTracks().forEach(track => track.stop());
+                    })
+                    .catch(error => {
+                        document.getElementById('permissionResults').innerHTML += 
+                            '<p>Camera access denied: ' + error.message + '</p>';
+                    });
+            }
+        }
+        
+        // Simulate navigator property access for fingerprinting
+        setTimeout(() => {
+            const props = [
+                navigator.userAgent,
+                navigator.platform,
+                navigator.language,
+                screen.width,
+                screen.height,
+                screen.colorDepth
+            ];
+            console.log('Navigator properties accessed for fingerprinting:', props);
+        }, 1000);
+    </script>
+</body>
+</html>

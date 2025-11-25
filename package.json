@@ -1,0 +1,29 @@
+{
+  "name": "privacygrade-extension",
+  "version": "1.0.0",
+  "description": "Browser extension that analyzes website privacy practices and assigns grades",
+  "main": "background.js",
+  "scripts": {
+    "build": "node build.js",
+    "test": "echo \"No tests specified\" && exit 0",
+    "lint": "echo \"No linting configured\" && exit 0"
+  },
+  "keywords": [
+    "privacy",
+    "browser-extension",
+    "tracking",
+    "fingerprinting",
+    "security"
+  ],
+  "author": "PrivacyGrade Team",
+  "license": "MIT",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/privacygrade"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/privacygrade/issues"
+  },
+  "homepage": "https://github.com/your-username/privacygrade#readme"
+}
